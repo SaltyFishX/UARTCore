@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------------------
-// uart to internal bus top module 
+// Simple Uart Core
 //
 //---------------------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ module uart2bus_top
 	//int_rd_data, int_read, 
 	//int_req, int_gnt 
 );
-parameter T1ms =23'd50000;
+//parameter T1ms =23'd50000;
 //---------------------------------------------------------------------------------------
 // modules inputs and outputs 
 input 			clock;			// global clock input 
@@ -52,17 +52,17 @@ wire	[15:0]	baud_limit;
 wire			baud_clk;
 wire  		ce_1;
 reg	[1:0]  i;
-reg	[22:0] Count1;
+//reg	[22:0] Count1;
 
-always @ (posedge clock or negedge reset)
-	if (reset == 1'b0)
-		Count1 <= 23'd0;
-	else if(Count1 == T1ms)
-		Count1 <= 23'd0;
-	else
-		Count1 <= Count1 + 1'b1;
+//always @ (posedge clock or negedge reset)
+//	if (reset == 1'b0)
+//		Count1 <= 23'd0;
+//	else if(Count1 == T1ms)
+//		Count1 <= 23'd0;
+//	else
+//		Count1 <= Count1 + 1'b1;
 
-//always @ (posedge clock or negedge reset)        //测试串口发送
+//always @ (posedge clock or negedge reset)        //test for UART sending
 //begin
 //	if (reset == 1'b0) 
 //		begin
@@ -93,7 +93,7 @@ always @ (posedge clock or negedge reset)
 //		end					
 //end
 
-always @ (posedge clock or negedge reset)
+always @ (posedge clock or negedge reset)      //test for UART sending and Receiving
 	if (reset == 1'b0) 
 		begin
 			i <= 1'b0;
@@ -107,20 +107,23 @@ always @ (posedge clock or negedge reset)
 						begin
 							tx_data <= rx_data;
 							tx_begin <= 1'b1;
-							i <= i + 1'b1;
+							//i <= i + 1'b1;
 						end
 					else
-						i <= 1'b0;
+						begin
+							i <= 1'b0;
+							tx_begin <= 1'b0;
+						end	
 				end
-			1:
-				begin
-					if(Count1 == T1ms)
-						i <= i - 1'b1;
-					else if(tx_begin)
-						tx_begin <= 1'b0;
-					else
-						i <= 1'b1;
-				end
+//			1:
+//				begin
+//					if(Count1 == T1ms)
+//						i <= i - 1'b1;
+//					else if(tx_begin)
+//						tx_begin <= 1'b0;
+//					else
+//						i <= 1'b1;
+//				end
 			default:
 				tx_begin <= 1'b0;
 			endcase
@@ -162,5 +165,5 @@ assign baud_limit = `D_BAUD_LIMIT;
 
 endmodule
 //---------------------------------------------------------------------------------------
-//						Th.. Th.. Th.. Thats all folks !!!
+//						 That is all
 //---------------------------------------------------------------------------------------
